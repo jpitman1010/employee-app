@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
 import { Card, FAB } from 'react-native-paper';
 
-const Home = () => {
+const Home = (props) => {
     const data = [
         { id:1, name:"Employee 1 Name", position:"web developer" },
         { id:2, name:"Employee 2 Name", position:"web developer" },
@@ -51,7 +51,7 @@ const Home = () => {
                 small="false"
                 icon="plus"
                 theme={{colors: {accent: 'black'}}}
-                onPress={() => console.log('Pressed')}
+                onPress={() => props.navigation.navigate("Create")}
             />
 
        </View>

@@ -5,18 +5,33 @@ import Constants from 'expo-constants';
 import Home from './screens/Home';
 import CreateEmployee from './screens/CreateEmployee';
 import Profile from './screens/Profile';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+
+const Stack = createStackNavigator();
 
 
-export default function App() {
+function App() {
   return (
-    <View style={styles.container}>
-      {/* <Home/> */}
-      {/* <CreateEmployee /> */}
-      <Profile />
-      <StatusBar style="auto" />
-    </View>
+      <View style={styles.container}>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Create" component={CreateEmployee} />
+        </Stack.Navigator>
+      </View>
+
   );
 }
+
+export default ()=>{
+  return (
+    <NavigationContainer>
+      <App />
+    </NavigationContainer>
+  )
+}
+
 
 const styles = StyleSheet.create({
   container: {
