@@ -14,7 +14,7 @@ const Stack = createStackNavigator();
 function App() {
   return (
       <View style={styles.container}>
-        <Stack.Navigator>
+        <Stack.Navigator headerMode="none">
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="Create" component={CreateEmployee} />
