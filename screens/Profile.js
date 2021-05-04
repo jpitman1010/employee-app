@@ -5,12 +5,13 @@ import { Title, Card, Button } from 'react-native-paper';
 import { MaterialIcons, Entypo } from '@expo/vector-icons';
 
 
-const Profile = ()=>{
+const Profile = (props)=>{
+    const {name, profilePicture,phone,email,salary,position} = props.route.params.item
    const openDial = () => {
     if(Platform.OS ==="android"){
-        Linking.openURL("tel: 8675309")
+        Linking.openURL(`tel:  ${phone}`)
     }else{
-        Linking.openURL("telprompt:8675309")
+        Linking.openURL(`telprompt: ${phone}`)
     }
    }
     return(
@@ -24,12 +25,12 @@ const Profile = ()=>{
             <View style={{alignItems:"center"}}>
                 <Image 
                 style={styles.image}
-                source={{uri:"https://picsum.photos/100/100?random=1"}} 
+                source={{uri:profilePicture}} 
                 />
         </View>     
         <View style={{alignItems:"center",marginBottom:15}}>
             <Title>
-                Employee's name.
+                {name}
             </Title>
             <Text>
                 Web Developer (title/position)
@@ -40,7 +41,7 @@ const Profile = ()=>{
                 <View style={styles.cardContent}>
                     <MaterialIcons name="email" siz={42} color="black" />
                     <Text style={styles.text}>
-                        myemail@email.com
+                        {email}
                     </Text>
                 </View>
             </Card>
@@ -48,7 +49,7 @@ const Profile = ()=>{
                 <View style={styles.cardContent}>
                     <Entypo name="phone" siz={42} color="black" />
                     <Text style={styles.text}>
-                        867-5309
+                        {phone}
                     </Text>
                 </View>
             </Card>
@@ -56,7 +57,7 @@ const Profile = ()=>{
                 <View style={styles.cardContent}>
                     <MaterialIcons name="attach-money" siz={42} color="black" />
                     <Text style={styles.text}>
-                        1
+                        {salary}
                     </Text>
                 </View>
             </Card>

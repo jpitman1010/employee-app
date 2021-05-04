@@ -1,33 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, ActivityIndicator } from 'react-native';
 import { Card, FAB } from 'react-native-paper';
 
-const Home = (props) => {
-    const data = [
-        { id:1, name:"Employee 1 Name", position:"web developer" },
-        { id:2, name:"Employee 2 Name", position:"web developer" },
-        { id:3, name:"Employee 3 Name", position:"web developer" },
-        { id:4, name:"Employee 4 Name", position:"web developer" },
-        { id:5, name:"Employee 5 Name", position:"web developer" },
-        { id:6, name:"Employee 6 Name", position:"web developer" },
-        { id:7, name:"Employee 7 Name", position:"web developer" },
-        { id:8, name:"Employee 8 Name", position:"web developer" }
-
-    ]
+const Home = ({navigation})=> {
+    const [data, setData] = useState([])
+    const[loading, setLoading] = useState(true)
+    useEffect(()=>{
+        fetch("http://192.168.1.141:3000/")
+        .then(res=>res.json())
+        .then(results=>{
+            console.log(results)
+            setData(results)
+            setLoading(false)
+        })
+    },[])
 
     const renderList = ((item)=>{
         return (
-            <Card style={styles.myCard}>
+            <Card 
+            style={styles.myCard} 
+            onPress={()=>navigation.navigate("Profile", {item})}
+            >
 
             <View style={styles.cardView} >
             <Image 
             style={styles.image} 
-            source={{uri:"https://picsum.photos/100/100?random=1"}} 
+            source={{uri:item.profilePicture}} 
             />
             <View>
-            <Text styles={styles.text}>{item.name}</Text>
-            <Text styles={styles.text}>{item.position}</Text>
+            <Text styles={styles.text}>Name:{item.name}</Text>
+            <Text styles={styles.text}>Position: {item.position}</Text>
+            <Text styles={styles.text}>Salary: ${item.salary}</Text>
 
             </View>
         </View>
@@ -38,6 +42,9 @@ const Home = (props) => {
 
   return (
        <View>
+           {loading? 
+           <ActivityIndicator size="small" color="#0000ff" /> 
+           :
            <FlatList
                data={data}
                renderItem={({item})=>{
@@ -45,13 +52,13 @@ const Home = (props) => {
                }}
                keyExtractor={item=>`${item.id}`}
                />
-
+            }
             <FAB
                 style={styles.fab}
                 small="false"
                 icon="plus"
                 theme={{colors: {accent: 'black'}}}
-                onPress={() => props.navigation.navigate("Create")}
+                onPress={() => navigation.navigate("Create")}
             />
 
        </View>
