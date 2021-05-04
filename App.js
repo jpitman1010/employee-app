@@ -5,19 +5,39 @@ import Constants from 'expo-constants';
 import Home from './screens/Home';
 import CreateEmployee from './screens/CreateEmployee';
 import Profile from './screens/Profile';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, HeaderStyleInterpolators } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
-
+const stackOptions = {
+    title: "Home",
+    headerTintColor: "white",
+    headerStyle: {
+    backgroundColor: "grey"
+    }
+  }
 
 function App() {
   return (
       <View style={styles.container}>
-        <Stack.Navigator headerMode="none">
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Profile" component={Profile} />
-          <Stack.Screen name="Create" component={CreateEmployee} />
+        <Stack.Navigator>
+          <Stack.Screen 
+          name="Home" 
+          component={Home}
+          options={stackOptions}
+           />
+          <Stack.Screen 
+          name="Profile" 
+          component={Profile}
+          options={{...stackOptions, title:"Profile"}}
+
+           />
+          <Stack.Screen 
+          name="Create" 
+          component={CreateEmployee} 
+          options={{...stackOptions, title:"Create Employee"}}
+
+          />
         </Stack.Navigator>
       </View>
 

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, Modal } from 'react-native';
+import { StyleSheet, Text, View, Image, Modal, Alert } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+
 
 const CreateEmployee = ()=>{
     const [name, setName] = useState("")
@@ -9,6 +12,37 @@ const CreateEmployee = ()=>{
     const [salary, setSalary] = useState("")
     const [profilePicture, setProfilePicture] = useState("")
     const [modal, setModal] = useState(false)
+
+
+
+    const pickFromGallery =  async ()=>{
+       const {granted} = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
+       if(granted){
+        let data = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect:[1,1],
+        quality: 0.5
+        })
+        console.log(data)
+       }else{
+        Alert.alert('Grant permission to select a photo.')
+       }
+    }
+    const pickFromCamera =  async ()=>{
+       const {granted} = await Permissions.askAsync(Permissions.CAMERA)
+       if(granted){
+        let data = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect:[1,1],
+        quality: 0.5
+        })
+        console.log(data)
+       }else{
+        Alert.alert('Grant permission to select a photo.')
+       }
+    }
 
     return (
         <View style={styles.root}>
@@ -79,14 +113,14 @@ const CreateEmployee = ()=>{
                 <View style={styles.modalButtonView}>
                     <Button icon="camera" 
                     mode="contained" 
-                    onPress={() => setModal(false)}
+                    onPress={() => pickFromCamera()}
                     theme={theme}
                     marginTop={25}>
                         Camera
                     </Button>
                     <Button icon="image-area" 
                     mode="contained" 
-                    onPress={() => setModal(false)} 
+                    onPress={() => pickFromGallery()} 
                     marginTop={25}
                     theme={theme}
                     >
