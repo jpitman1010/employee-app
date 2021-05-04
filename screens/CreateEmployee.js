@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, Modal, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, Modal, Alert,KeyboardAvoidingView } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -10,9 +10,31 @@ const CreateEmployee = ()=>{
     const [phone, setPhone] = useState("")
     const [email, setEmail] = useState("")
     const [salary, setSalary] = useState("")
+    const [position, setPosition] = useState("")
     const [profilePicture, setProfilePicture] = useState("")
     const [modal, setModal] = useState(false)
 
+
+    const submitData = ()=>{
+        fetch("http://192.168.1.141:3000/send-data",{
+            method:"post",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                phone,
+                salary,
+                profilePicture,
+                position
+            })
+        })
+        .then(res=>res.json())
+        .then(data=>{
+            console.log('This has been added to the database:', data)
+        })
+    }
 
 
     const pickFromGallery =  async ()=>{
@@ -71,7 +93,7 @@ const CreateEmployee = ()=>{
     }
 
     return (
-        <View style={styles.root}>
+        <KeyboardAvoidingView style={styles.root}>
             <TextInput
                 label="Name"
                 value={name}
@@ -106,6 +128,14 @@ const CreateEmployee = ()=>{
                 style={styles.input}
                 onChangeText={text => setSalary(text)}
             />
+            <TextInput
+                label="Position"
+                value={position}
+                mode="outlined"
+                theme={theme}
+                style={styles.input}
+                onChangeText={text => setPosition(text)}
+            />
             <Button 
                 style={styles.input}
                 icon={profilePicture===""?"upload":"check-bold"} 
@@ -120,7 +150,7 @@ const CreateEmployee = ()=>{
                 style={styles.input}
                 icon="content-save" 
                 mode="contained" 
-                onPress={() => console.log('saved')}
+                onPress={() => submitData()}
                 margin={5}
                 theme={theme}
                 >
@@ -161,7 +191,7 @@ const CreateEmployee = ()=>{
                 </Button>
             </View>
             </Modal>
-        </View>
+        </KeyboardAvoidingView>
         
     )
 }
