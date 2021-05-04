@@ -18,15 +18,20 @@ const CreateEmployee = ()=>{
     const pickFromGallery =  async ()=>{
        const {granted} = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
        if(granted){
-        let data = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect:[1,1],
-        quality: 0.5
-        })
-        console.log(data)
-       }else{
-        Alert.alert('Grant permission to select a photo.')
+            let data = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect:[1,1],
+            quality: 0.5
+            })
+        if(!data.cancelled){
+            let newFile = { uri:data.uri, 
+                type:`test/${data.uri.split('.')}[1]}`,
+                name:`test/${data.uri.split('.')}[1]}`}
+            handleUpload(newFile)
+        }
+        }else{
+            Alert.alert('Grant permission to select a photo.')
        }
     }
     const pickFromCamera =  async ()=>{
@@ -38,10 +43,31 @@ const CreateEmployee = ()=>{
         aspect:[1,1],
         quality: 0.5
         })
-        console.log(data)
-       }else{
+        if(!data.cancelled){
+            let newFile = { uri:data.uri, 
+                type:`test/${data.uri.split('.')}[1]}`,
+                name:`test/${data.uri.split('.')}[1]}`}
+            handleUpload(newFile)
+        }       
+    }else{
         Alert.alert('Grant permission to select a photo.')
        }
+    }
+
+    const handleUpload = (image)=>{
+        const data = new FormData()
+        data.append('file',image)
+        data.append('upload_preset', 'employeeApp')
+        data.append('cloud_name','juliepitman')
+
+        fetch('https://api.cloudinary.com/v1_1/juliepitman/image/upload',{
+            method: "post",
+            body: data,
+        }).then(res=>res.json())
+        .then(data=>{
+            setProfilePicture(data.url)
+            setModal(false)
+        })
     }
 
     return (
@@ -82,7 +108,7 @@ const CreateEmployee = ()=>{
             />
             <Button 
                 style={styles.input}
-                icon="upload" 
+                icon={profilePicture===""?"upload":"check-bold"} 
                 mode="contained" 
                 onPress={() => setModal(true)}
                 margin={5}
