@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, Modal, Alert,KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, Image, Modal, Alert } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+import { Camera } from 'expo-camera';
+import { MEDIA_LIBRARY } from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
 
 
-const CreateEmployee = ()=>{
+
+const CreateEmployee = ({navigation})=>{
     const [name, setName] = useState("")
     const [phone, setPhone] = useState("")
     const [email, setEmail] = useState("")
@@ -32,17 +36,20 @@ const CreateEmployee = ()=>{
         })
         .then(res=>res.json())
         .then(data=>{
-            console.log('This has been added to the database:', data)
+            Alert.alert(`Added ${data.name} as New Employee`)
+            navigation.navigate("Home")
+        }).catch(err=>{
+            Alert.alert('Error submitting data.')
         })
     }
 
 
     const pickFromGallery =  async ()=>{
-       const {granted} = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
-       if(granted){
+       const { status, permissions} = await MediaLibrary.getPermissionsAsync(Permissions.MEDIA_LIBRARY)
+       if(status === 'granted' ){
             let data = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
+            // allowsEditing: true,
             aspect:[1,1],
             quality: 0.5
             })
@@ -57,7 +64,7 @@ const CreateEmployee = ()=>{
        }
     }
     const pickFromCamera =  async ()=>{
-       const {granted} = await Permissions.askAsync(Permissions.CAMERA)
+       const {granted} = await ImagePicker.getCameraPermissionsAsync(Permissions.CAMERA)
        if(granted){
         let data = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -89,11 +96,13 @@ const CreateEmployee = ()=>{
         .then(data=>{
             setProfilePicture(data.url)
             setModal(false)
+        }).catch(err=>{
+            Alert.alert('Error while uploading image.')
         })
     }
 
     return (
-        <KeyboardAvoidingView style={styles.root}>
+        <View style={styles.root}>
             <TextInput
                 label="Name"
                 value={name}
@@ -191,7 +200,7 @@ const CreateEmployee = ()=>{
                 </Button>
             </View>
             </Modal>
-        </KeyboardAvoidingView>
+        </View>
         
     )
 }
@@ -204,7 +213,8 @@ const theme = {
 }
 const styles = StyleSheet.create({
     root: {
-        flex:1 
+        flex:1,
+        marginTop:20,
     }, 
     input: {
         margin:5

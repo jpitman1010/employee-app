@@ -1,20 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
-import { StyleSheet, Text, View, Image, FlatList, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { Card, FAB } from 'react-native-paper';
 
 const Home = ({navigation})=> {
     const [data, setData] = useState([])
     const[loading, setLoading] = useState(true)
-    useEffect(()=>{
+    
+    const fetchData = ()=>{
         fetch("http://192.168.1.141:3000/")
         .then(res=>res.json())
         .then(results=>{
             console.log(results)
             setData(results)
             setLoading(false)
-        })
+    }).catch(err=>{
+        Alert.alert('Unable to fetch new records.')
+    })
+    }
+
+    useEffect(()=>{
+        fetchData()
     },[])
+
 
     const renderList = ((item)=>{
         return (
@@ -42,17 +50,17 @@ const Home = ({navigation})=> {
 
   return (
        <View>
-           {loading? 
-           <ActivityIndicator size="small" color="#0000ff" /> 
-           :
+           
            <FlatList
                data={data}
                renderItem={({item})=>{
                    return renderList(item)
                }}
                keyExtractor={item=>`${item.id}`}
+               onRefresh={()=>fetchData()}
+               refreshing={loading}
                />
-            }
+            
             <FAB
                 style={styles.fab}
                 small="false"
