@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, Modal, Alert } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
 
@@ -33,6 +34,7 @@ const CreateEmployee = ({navigation, route})=>{
     const [position, setPosition] = useState(getDetails("position"))
     const [profilePicture, setProfilePicture] = useState(getDetails("profilePicture"))
     const [modal, setModal] = useState(false)
+    const [enableShift, setEnableShift] = useState(false)
 
 
     const submitData = ()=>{
@@ -140,10 +142,12 @@ const CreateEmployee = ({navigation, route})=>{
     }
 
     return (
-        <View style={styles.root}>
+        <KeyboardAwareScrollView  style={styles.root} >
+        <View >
             <TextInput
                 label="Name"
                 value={name}
+                onFocus={() => setEnableShift(false)}
                 mode="outlined"
                 theme={theme}
                 style={styles.input}
@@ -154,6 +158,7 @@ const CreateEmployee = ({navigation, route})=>{
                 value={email}
                 mode="outlined"
                 theme={theme}
+                onFocus={()=>setEnableShift(false)}
                 style={styles.input}
                 onChangeText={text => setEmail(text)}
             />
@@ -162,6 +167,7 @@ const CreateEmployee = ({navigation, route})=>{
                 value={phone}
                 mode="outlined"
                 theme={theme}
+                onFocus={()=>setEnableShift(false)}
                 keyboardType="number-pad"
                 style={styles.input}
                 onChangeText={text => setPhone(text)}
@@ -171,6 +177,7 @@ const CreateEmployee = ({navigation, route})=>{
                 value={salary}
                 mode="outlined"
                 theme={theme}
+                onFocus={()=>setEnableShift(true)}
                 keyboardType="number-pad"
                 style={styles.input}
                 onChangeText={text => setSalary(text)}
@@ -181,6 +188,7 @@ const CreateEmployee = ({navigation, route})=>{
                 mode="outlined"
                 theme={theme}
                 style={styles.input}
+                onFocus={()=>setEnableShift(true)}
                 onChangeText={text => setPosition(text)}
             />
             <Button 
@@ -253,6 +261,7 @@ const CreateEmployee = ({navigation, route})=>{
             </View>
             </Modal>
         </View>
+        </KeyboardAwareScrollView>
         
     )
 }
