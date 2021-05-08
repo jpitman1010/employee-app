@@ -2,20 +2,36 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image, Modal, Alert } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import * as Permissions from 'expo-permissions';
-import { Camera } from 'expo-camera';
-import { MEDIA_LIBRARY } from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 
 
 
-const CreateEmployee = ({navigation})=>{
-    const [name, setName] = useState("")
-    const [phone, setPhone] = useState("")
-    const [email, setEmail] = useState("")
-    const [salary, setSalary] = useState("")
-    const [position, setPosition] = useState("")
-    const [profilePicture, setProfilePicture] = useState("")
+const CreateEmployee = ({navigation, route})=>{
+    const getDetails = (type)=>{
+        if(route.params){
+            switch(type) {
+                case "name":
+                    return route.params.name
+                case "phone":
+                    return route.params.phone
+                case "email":
+                    return route.params.email
+                case "salary":
+                    return route.params.salary
+                case "position":
+                    return route.params.position
+                case "profilePicture":
+                    return route.params.profilePicture
+            }
+        }else{return ""}
+    }
+    const [name, setName] = useState(getDetails("name"))
+    const [phone, setPhone] = useState(getDetails("phone"))
+    const [email, setEmail] = useState(getDetails("email"))
+    const [salary, setSalary] = useState(getDetails("salary"))
+    const [position, setPosition] = useState(getDetails("position"))
+    const [profilePicture, setProfilePicture] = useState(getDetails("profilePicture"))
     const [modal, setModal] = useState(false)
 
 
@@ -38,8 +54,30 @@ const CreateEmployee = ({navigation})=>{
         .then(data=>{
             Alert.alert(`Added ${data.name} as New Employee`)
             navigation.navigate("Home")
-        }).catch(err=>{
-            Alert.alert('Error submitting data.')
+        })
+    }
+
+    const updateDetails = ()=>{
+        fetch("http://192.168.1.141:3000/update",{
+            method:"post",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: route.params.id,
+                name,
+                email,
+                phone,
+                salary,
+                profilePicture,
+                position
+            })
+        })
+        .then(res=>res.json())
+        .then(data=>{
+            console.log('data from updateDetails ===',data)
+            Alert.alert(`Updated employee's file.`)
+            navigation.navigate("Home")
         })
     }
 
@@ -49,7 +87,7 @@ const CreateEmployee = ({navigation})=>{
        if(status === 'granted' ){
             let data = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            // allowsEditing: true,
+            allowsEditing: true,
             aspect:[1,1],
             quality: 0.5
             })
@@ -155,16 +193,30 @@ const CreateEmployee = ({navigation})=>{
                 >
                     Upload Image
             </Button>
+            {route.params? 
             <Button 
-                style={styles.input}
-                icon="content-save" 
-                mode="contained" 
-                onPress={() => submitData()}
-                margin={5}
-                theme={theme}
-                >
-                   Save
+            style={styles.input}
+            icon="content-save" 
+            mode="contained" 
+            onPress={() => updateDetails()}
+            margin={5}
+            theme={theme}
+            >
+            Update Details
             </Button>
+            :
+            <Button 
+            style={styles.input}
+            icon="content-save" 
+            mode="contained" 
+            onPress={() => submitData()}
+            margin={5}
+            theme={theme}
+            >
+            Save
+            </Button>
+        }
+            
             <Modal 
             animationType="slide"
             transparent={true}

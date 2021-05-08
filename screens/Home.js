@@ -11,7 +11,6 @@ const Home = ({navigation})=> {
         fetch("http://192.168.1.141:3000/")
         .then(res=>res.json())
         .then(results=>{
-            console.log(results)
             setData(results)
             setLoading(false)
     }).catch(err=>{
