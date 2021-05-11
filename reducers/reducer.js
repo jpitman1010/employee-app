@@ -1,16 +1,15 @@
 
-
-
-const initState = {
+export const initState = {
     data: [],
     loading: true
 }
 
-export const reducer = (state = initState,action)=>{
+
+
+export const reducer = (state, action)=>{
     if(action.type == "ADD_DATA"){
         return {
                         // destructure state/spread it out by ...state
-
         ...state,
         data: action.payload
         }

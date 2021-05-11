@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { render } from 'react-dom';
 import { StyleSheet, Text, View, Image, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { Card, FAB } from 'react-native-paper';
 import { useSelector,useDispatch } from 'react-redux';
+import { MyContext } from '../App';
+
 
 const Home = ({navigation})=> {
     // const [data, setData] = useState([])
     // const[loading, setLoading] = useState(true)
-    const dispatch = useDispatch()
-    const {data, loading} = useSelector((state)=>{
-        return state
-    })
-    
+    // const dispatch = useDispatch()
+    // const {data, loading} = useSelector((state)=>{
+    //     return state
+// })
+
+    const {state, dispatch} = useContext(MyContext)
+    const {data, loading} = state
+
     const fetchData = ()=>{
         fetch("http://192.168.1.141:3000/")
         .then(res=>res.json())

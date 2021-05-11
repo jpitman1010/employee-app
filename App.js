@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { createContext, useReducer } from 'react';
 import { StyleSheet, Text, View, KeyboardAvoidingView } from 'react-native';
 import Constants from 'expo-constants';
 import Home from './screens/Home';
@@ -9,11 +9,11 @@ import { createStackNavigator, HeaderStyleInterpolators } from '@react-navigatio
 import { NavigationContainer } from '@react-navigation/native';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import { reducer } from './reducers/reducer';
+import { reducer, initState } from './reducers/reducer';
 
-const store = createStore(reducer)
+// const store = createStore(reducer)
 
-
+export const MyContext = createContext();
 
 
 const Stack = createStackNavigator();
@@ -55,12 +55,16 @@ function App() {
 }
 
 export default ()=>{
+  const [state,dispatch] = useReducer(reducer,initState)
+
   return (
-    <Provider store={store}>
-    <NavigationContainer>
-      <App />
-    </NavigationContainer>
-    </Provider>
+    <MyContext.Provider value={
+      {state:state,dispatch:dispatch}
+      }>
+      <NavigationContainer>
+        <App />
+      </NavigationContainer>
+    </MyContext.Provider>
   )
 }
 
